@@ -12,10 +12,10 @@
 
 	<meta charset="UTF-8">
 	<title>Five In A Row</title>
-	
+
 	<script type="text/javascript" src="simpleGame.js"></script>
 	<script>
-	
+
 		var game;
 		var backgroundSprite;
 		var cells;
@@ -25,37 +25,35 @@
 		var currentPlayer = BLK;
 		var WTEcells;
 		var BLKcells;
-		
+
 		function Cell(){
 			tCell = new Sprite(game, "blank.png", 20, 20);
 			tCell.setSpeed(0);
 			tCell.state = BLANK;
-		
-			tCell.images = new Array("blank.png", "goBlackPiece.png", "goWhitePiece.png");    
-			
+
+			tCell.images = new Array("blank.png", "goBlackPiece.png", "goWhitePiece.png");
+
 			tCell.checkClick = function(){
 				if (this.isClicked()){
 					if (this.state == BLANK){
 						this.state = currentPlayer;
 						this.setImage(this.images[currentPlayer]);
-						
+
 						//change the player
 						if (currentPlayer == BLK){
-							//BLKcells.append(this);
 							currentPlayer = WTE;
 						} else {
-							//WTEcells.append(this);
 							currentPlayer = BLK;
 						} // end if
-						
-						
+
+
 					} // end if
 				} // end if
 			} // end checkClick
-			
+
 			return tCell;
 		} // end cell
-		
+
 		function buildIntersects(){
 			cells = new Array(361);
 			xOffset = 52;
@@ -67,54 +65,47 @@
 				xPos = (row * 35) + xOffset;
 				yPos = (col * 35) + yOffset;
 				cells[i].setPosition(xPos, yPos);
-				
-				/*if (i%2 == 0){
-					BLKcells.append(cells[i]);
-				} else {
-					WTEcells.append(cells[i]);
-				}*/
-				
 			} // end for loop
-		
+
 		}
-		
+
 		function updateIntersects(){
 			for (i = 0; i < cells.length; i++){
 				cells[i].checkClick();
 				cells[i].update();
 			} // end for loop
 		} // end updateCells
-		
-		
+
+
 		function checkWins(){
-		
-		
-		
+
+
+
 		}
-		
+
 		function init(){
-		
+
 			game = new Scene();
-					
+
 			backgroundSprite = new Sprite(game, "Go.png", game.width, game.height);
 			backgroundSprite.setSpeed(0);
 			backgroundSprite.setPosition(game.width/2,game.height/2);
-			
+
 			buildIntersects();
-			
-			
+
+
 			game.start();
-		
+
 		}
-	
+
 		function update(){
-		
+
 			game.clear();
 			backgroundSprite.update();
 			updateIntersects();
-		
+
 		}
-	
+
 	</script>
 
 </head>
@@ -122,5 +113,4 @@
 <body onload = "init()">
 
 </body>
-	<!--<img src = "Go.png" style = "width: 640px; height: 480px;">-->
 </html>
