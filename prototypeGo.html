@@ -56,14 +56,14 @@
 
 		function buildIntersects(){
 			cells = new Array(361);
-			xOffset = 52;
-			yOffset = 52;
+			xOffset = 58;
+			yOffset = 58;
 			for (i = 0; i < cells.length; i++){
 				cells[i] = new Cell();
 				row = parseInt(i / 19);
 				col = i % 19;
-				xPos = (row * 35) + xOffset;
-				yPos = (col * 35) + yOffset;
+				xPos = (row * 40) + xOffset;
+				yPos = (col * 40) + yOffset;
 				cells[i].setPosition(xPos, yPos);
 			} // end for loop
 
