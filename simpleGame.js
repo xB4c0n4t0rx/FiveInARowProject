@@ -15,7 +15,7 @@ var currentKey = null;
 var keysDown = new Array(256);
 var virtKeys = false;
 
-function Sprite(scene, imageFile, width, height){ 
+function Sprite(scene, imageFile, width, height){
     //core class for game engine
   this.scene = scene;
   this.canvas = scene.canvas;
@@ -37,22 +37,22 @@ function Sprite(scene, imageFile, width, height){
   this.camera = false;
   this.visible = true;
   this.boundAction = WRAP;
-  
+
   this.changeImage = function(imgFile){
     this.image.src = imgFile;
   } // end this.changeImage
-  
+
   this.setImage = function(imgFile){
     //set and change image are the same thing.
     this.image.src = imgFile;
   } // end this.setImage
-  
+
   this.setPosition = function(x, y){
     //position is position of center
-    this.x = x; 
+    this.x = x;
     this.y = y;
   } // end setPosition function
-  
+
   this.setX = function (nx){ this.x = nx; }
   this.setY = function (ny){ this.y = ny; }
   this.setChangeX = function (ndx){ this.dx = ndx; }
@@ -78,23 +78,23 @@ function Sprite(scene, imageFile, width, height){
 	//The following lines are for Tyler's code. Removed for now
 	//if( this.camera ){ ctx.translate(this.x - this.camera.cameraOffsetX, this.y - this.camera.cameraOffsetY); }
 	//else{ ctx.translate(this.x, this.y); }
-      
+
       //transform element
       ctx.translate(this.x, this.y);
       ctx.rotate(this.imgAngle);
-      
+
       //draw image with center on origin
 	if( this.animation != false ){
           this.animation.drawFrame(ctx);
 	}
 	else{
-	  ctx.drawImage(this.image, 
-           0 - (this.width / 2), 
+	  ctx.drawImage(this.image,
+           0 - (this.width / 2),
            0 - (this.height / 2),
            this.width, this.height);
 	}
     ctx.restore();
-     
+
   } // end draw function
 
   this.update = function(){
@@ -109,11 +109,11 @@ function Sprite(scene, imageFile, width, height){
   this.setBoundAction = function(action){
     this.boundAction = action;
   } // end setBoundAction
-  
+
   this.checkBounds = function(){
     //behavior changes based on
     //boundAction property
-    
+
     camX = 0;
     camY = 0;
     if(this.camera){ camX = this.camera.cameraOffsetX; camY = this.camera.cameraOffsetY; }
@@ -121,24 +121,24 @@ function Sprite(scene, imageFile, width, height){
     leftBorder = camX;
     topBorder = camY;
     bottomBorder = this.cHeight + camY;
-    
+
     offRight = false;
     offLeft = false;
     offTop = false;
     offBottom = false;
-    
+
     if (this.x > rightBorder){
       offRight = true;
     }
-    
+
     if (this.x < leftBorder){
       offLeft = true;
     }
-    
+
     if (this.y > bottomBorder){
       offBottom = true;
     }
-    
+
     if (this.y < 0){
       offTop = true;
     }
@@ -147,15 +147,15 @@ function Sprite(scene, imageFile, width, height){
       if (offRight){
 	this.x = leftBorder;
       } // end if
-  
+
       if (offBottom){
 	this.y = topBorder;
       } // end if
-  
+
       if (offLeft){
 	this.x = rightBorder;
       } // end if
-  
+
       if (offTop){
 	this.y = bottomBorder;
       }
@@ -165,13 +165,13 @@ function Sprite(scene, imageFile, width, height){
 	this.calcSpeedAngle();
 	this.imgAngle = this.moveAngle;
       }
-      
+
       if (offLeft || offRight){
 	this.dx *= -1;
 	this.calcSpeedAngle();
 	this.imgAngle = this.moveAngle;
       }
-      
+
     } else if (this.boundAction == STOP){
       if (offLeft || offRight || offTop || offBottom){
 	this.setSpeed(0);
@@ -181,7 +181,7 @@ function Sprite(scene, imageFile, width, height){
         this.hide();
 	this.setSpeed(0);
       }
-      
+
     } else {
       //keep on going forever
     }
@@ -191,8 +191,8 @@ function Sprite(scene, imageFile, width, height){
     this.animation = new Animation(this.image, imgWidth, imgHeight, cellWidth, cellHeight);
 	this.animation.setup();
   }
- 
-  //animation methods 
+
+  //animation methods
   this.generateAnimationCycles = function(slicingFlag, framesArray){
     //Default: assume each row is a cycle and give them names Cycle1, Cycle2, ... , CycleN
 	//SINGLE_ROW: all the sprites are in one row on the sheet, the second parameter is either a number saying each cycle is that many frames or a list of how many frames each cycle is
@@ -215,7 +215,7 @@ function Sprite(scene, imageFile, width, height){
 	  }
 	  else{
 	    numCycles = framesArray.length;
-		for(i = 0; i < numCycles; i++){ 
+		for(i = 0; i < numCycles; i++){
 		  cycleName = "cycle" + (i+1);
 		  this.specifyCycle(cycleName, nextStartingFrame, framesArray[i]);
 		  nextStartingFrame += framesArray[i];
@@ -223,7 +223,7 @@ function Sprite(scene, imageFile, width, height){
 	  }
 	this.setCurrentCycle("cycle1");
   }
-  
+
   this.renameCycles = function(cycleNames){ this.animation.renameCycles(cycleNames); }
   this.specifyCycle = function(cycleName, startingCell, frames){ this.animation.addCycle(cycleName, startingCell, frames); }
   this.specifyState = function(stateName, cellName){ this.animation.addCycle(stateName, cellName, 1); }
@@ -232,14 +232,14 @@ function Sprite(scene, imageFile, width, height){
   this.playAnimation = function(){ this.animation.play(); }
   this.resetAnimation = function(){ this.animation.reset(); }
   this.setAnimationSpeed = function(speed){ this.animation.setAnimationSpeed(speed); }
-  
+
   this.calcVector = function(){
-    //used throughout speed / angle calculations to 
+    //used throughout speed / angle calculations to
     //recalculate dx and dy based on speed and angle
     this.dx = this.speed * Math.cos(this.moveAngle);
     this.dy = this.speed * Math.sin(this.moveAngle);
   } // end calcVector
-  
+
   this.calcSpeedAngle = function(){
     //opposite of calcVector:
     //sets speed and moveAngle based on dx, dy
@@ -251,7 +251,7 @@ function Sprite(scene, imageFile, width, height){
     this.speed = speed;
     this.calcVector();
   } // end setSpeed
-  
+
   this.getSpeed = function(){
     //calculate speed based on current dx and dy
     speed = Math.sqrt((this.dx * this.dx) + (this.dy * this.dy));
@@ -269,7 +269,7 @@ function Sprite(scene, imageFile, width, height){
     //convert degrees to radians
     this.imgAngle = degrees * Math.PI / 180;
   } // end setImgAngle
-  
+
   this.getImgAngle = function(){
     //imgAngle is stored in radians.
     //return it in degrees
@@ -298,12 +298,12 @@ function Sprite(scene, imageFile, width, height){
     this.moveAngle += diffRad;
     this.calcVector();
   } // end changeMoveAngleBy
-  
+
   this.getMoveAngle = function(){
     //moveAngle is stored in radians.
     //return it in degrees
     //don't forget we offset the angle by 90 degrees
-    return (this.moveAngle * 180 / Math.PI) + 90;    
+    return (this.moveAngle * 180 / Math.PI) + 90;
   }
 
     //convenience functions combine move and img angles
@@ -316,37 +316,37 @@ function Sprite(scene, imageFile, width, height){
       this.changeMoveAngleBy(degrees);
       this.changeImgAngleBy(degrees);
   } // end changeAngleBy
-  
+
   this.turnBy = function(degrees){
     //same as changeAngleBy
     this.changeAngleBy(degrees);
   }
-  
+
   this.addVector = function(degrees, thrust){
     //Modify the current motion vector by adding a new vector to it.
 
     //offset angle by 90 degrees
     degrees -= 90;
-    //input angle is in degrees - convert to radians    
+    //input angle is in degrees - convert to radians
     angle = degrees * Math.PI / 180;
-    
+
     //calculate dx and dy
     newDX = thrust * Math.cos(angle);
     newDY = thrust * Math.sin(angle);
     this.dx += newDX;
     this.dy += newDY;
-    
+
     //ensure speed and angle are updated
     this.calcSpeedAngle();
   } // end addVector
-    
+
   this.collidesWith = function(sprite){
     //check for collision with another sprite
-    
+
     //collisions only activated when both sprites are visible
     collision = false;
     if (this.visible){
-      
+
       if (sprite.visible){
 	//define borders
 	myLeft = this.x - (this.width / 2);
@@ -357,10 +357,10 @@ function Sprite(scene, imageFile, width, height){
 	otherRight = sprite.x + (sprite.width / 2);
 	otherTop = sprite.y - (sprite.height / 2);
 	otherBottom = sprite.y + (sprite.height / 2);
-    
+
 	//assume collision
 	collision = true;
-	
+
 	//determine non-colliding states
 	if ((myBottom < otherTop) ||
 	    (myTop > otherBottom) ||
@@ -374,14 +374,14 @@ function Sprite(scene, imageFile, width, height){
 
     return collision;
   } // end collidesWith
-  
+
   this.distanceTo = function(sprite){
       diffX = this.x - sprite.x;
       diffY = this.y - sprite.y;
       dist = Math.sqrt((diffX * diffX) + (diffY * diffY));
       return dist;
   } // end distanceTo
-  
+
   this.angleTo = function(sprite){
       //get centers of sprites
       myX = this.x + (this.width/2);
@@ -398,7 +398,7 @@ function Sprite(scene, imageFile, width, height){
       degrees += 90;
       return degrees;
   } // end angleTo
-  
+
   this.isMouseDown = function(){
     //determines if mouse is clicked on this element
     mx = this.scene.getMouseX();
@@ -408,7 +408,7 @@ function Sprite(scene, imageFile, width, height){
     sTop = this.y - (this.height / 2);
     sBottom = this.y + (this.height / 2);
     hit = false;
-    
+
     if (mx > sLeft){
       if (mx < sRight){
 	if (my > sTop){
@@ -416,7 +416,7 @@ function Sprite(scene, imageFile, width, height){
 	    if (this.scene.touchable){
 	      //if it's a touchable interface,
 	      //this is a hit
-	      hit = true;  
+	      hit = true;
 	    } else {
 	      //for a normal mouse, check for clicked, too
 	      if (this.scene.getMouseClicked()){
@@ -429,12 +429,12 @@ function Sprite(scene, imageFile, width, height){
     }
     return hit;
   } // end isMouseDown
-  
+
   this.isClicked = function(){
     //eventually return true only when mouse is released;
     //for now, simply another name for isMouseDown
     return this.isMouseDown();
-    
+
     /*
     hit = false;
     if (this.isMouseDown()){
@@ -445,7 +445,7 @@ function Sprite(scene, imageFile, width, height){
     return hit;
     */
   } // end isClicked
-  
+
   this.setCameraRelative = function( cam ){ this.camera = cam; }
 
   this.report = function(){
@@ -462,13 +462,13 @@ function Scene(){
 
     //determine if it's a touchscreen device
     this.touchable = 'createTouch' in document;
-    
+
     //dynamically create a canvas element
     this.canvas = document.createElement("canvas");
     this.canvas.style.backgroundColor = "yellow";
     document.body.appendChild(this.canvas);
     this.context = this.canvas.getContext("2d");
-    
+
     this.clear = function(){
       this.context.clearRect(0, 0, this.width, this.height);
     }
@@ -493,31 +493,31 @@ function Scene(){
 	this.mouseDown = false;
 	this.mouseClicked  = false;
       }
-    } 
+    }
 
     this.stop = function(){
       clearInterval(this.intID);
     }
 
-    this.updateKeys = function(e){      
+    this.updateKeys = function(e){
       //set current key
       currentKey = e.keyCode;
       //console.log(e.keyCode);
       keysDown[e.keyCode] = true;
     } // end updateKeys
-    
+
     this.clearKeys = function(e){
       currentKey = null;
       keysDown[e.keyCode] = false;
     } // end clearKeys
-    
+
     this.initKeys = function(){
       //initialize keys array to all false
       for (keyNum = 0; keyNum < 256; keyNum++){
 	      keysDown[keyNum] = false;
       } // end for
     } // end initKeys
-    
+
     this.setSizePos = function(height, width, top, left){
       //convenience function.  Cals setSize and setPos
       this.setSize(height, width);
@@ -531,7 +531,7 @@ function Scene(){
       this.canvas.width = this.width;
       this.canvas.height = this.height;
     } // end setSize
-    
+
     this.setPos = function(left, top){
       //set the left and top position of the canvas
       //offset from the page
@@ -545,50 +545,50 @@ function Scene(){
       this.canvas.style.OTransform = "translate(" + left + "px, " + top + "px)";
 
     } // end setPos
-    
+
     this.setBG = function(color){
       this.canvas.style.backgroundColor = color;
     } // end this.setBG
-    
+
     this.updateMousePos = function(e){
       this.mouseX = e.pageX;
       this.mouseY = e.pageY;
     } // end function
-    
+
     this.hideCursor = function(){
       this.canvas.style.cursor = "none";
     }
-    
+
     this.showCursor = function(){
       this.canvas.style.cursor = "default";
     }
-    
+
     this.getMouseX = function(){
       //incorporate offset for canvas position
       return document.mouseX - this.left;
     }
-    
+
     this.getMouseY = function(){
       //incorporate offset for canvas position
       return document.mouseY - this.top;
     }
-    
+
     this.getMouseClicked = function(){
       return document.mouseClicked;
     }
-    
+
     this.hide = function(){
       this.canvas.style.display = "none";
     }
-    
+
     this.show = function(){
       this.canvas.style.display = "block";
     }
-    
+
     this.setSize(800, 600);
     this.setPos(10, 10);
     this.setBG("lightgray");
-    
+
 } // end Scene class def
 
 function Sound(src){
@@ -608,14 +608,14 @@ function Sound(src){
   this.play = function(){
     this.snd.play();
   } // end play function
-  
+
   this.showControls = function(){
     //generally not needed.
     //crude hack for IOS
     this.snd.setAttribute("controls", "controls");
     this.snd.style.display = "block";
   } // end showControls
-  
+
 } // end sound class def
 
 function Joy(){
@@ -626,7 +626,7 @@ function Joy(){
   //diffX, diffY: touch motion read as a joystick input
   //if virtKeys is set true
   //joystick inputs will be read as arrow keys
-  
+
   //properties
   SENSITIVITY = 50;
   diffX = 0;
@@ -634,7 +634,7 @@ function Joy(){
   var touches = [];
   var startX;
   var startY;
-  
+
   //define event handlers
   this.onTouchStart = function(event){
     result = "touch: ";
@@ -647,7 +647,7 @@ function Joy(){
     this.mouseY = startY;
     //console.log(result);
   } // end onTouchStart
-  
+
  this.onTouchMove = function(event){
     result = "move: "
     event.preventDefault();
@@ -658,8 +658,8 @@ function Joy(){
     this.diffX = touches[0].screenX - startX;
     this.diffY = touches[0].screenY - startY;
     result += "dx: " + this.diffX + ", dy: " + this.diffY;
-    
-    //manage virtual keys if enabled    
+
+    //manage virtual keys if enabled
     if (virtKeys){
       THRESHHOLD = 10;
       if (this.diffX > THRESHHOLD){
@@ -667,44 +667,44 @@ function Joy(){
       } else {
 	keysDown[K_RIGHT] = false;
       } // end if
-      
+
       if (this.diffX < -THRESHHOLD){
 	keysDown[K_LEFT] = true;
       } else {
 	keysDown[K_LEFT] = false;
       } // end if
-      
+
       if (this.diffY > THRESHHOLD){
 	keysDown[K_DOWN] = true;
       } else {
 	keysDown[K_DOWN] = false;
       } // end if
-      
+
       if (this.diffY < -THRESHHOLD){
 	keysDown[K_UP] = true;
       } else {
 	keysDown[K_UP] = false;
       } // end if
-      
+
     } // end if
 
   } // end onTouchMove
-  
+
   this.onTouchEnd = function(event){
     result = "no touch";
     touches = event.touches;
     this.diffX = 0;
     this.diffY = 0;
-    
+
     //turn off all virtual keys
     if (virtKeys){
       keysDown[K_LEFT] = false;
       keysDown[K_RIGHT] = false;
       keysDown[K_UP] = false;
       keysDown[K_DOWN] = false;
-    } 
+    }
   } // end onTouchEnd
-  
+
   // add utility methods to retrieve various attributes
   this.getDiffX = function(){
     //compensate for possible null
@@ -720,10 +720,10 @@ function Joy(){
     } // end if
     return document.diffY;
   }
-  
+
   this.getMouseX = function(){return document.mouseX;}
-  this.getMouseY = function(){return document.mouseY;}    
-  
+  this.getMouseY = function(){return document.mouseY;}
+
   //add event handlers if appropriate
   touchable = 'createTouch' in document;
   if (touchable){
@@ -731,7 +731,7 @@ function Joy(){
     document.addEventListener('touchmove', this.onTouchMove, false);
     document.addEventListener('touchend', this.onTouchEnd, false);
   } // end if
-  
+
 } // end joy class def
 
 function Accel(){
@@ -741,11 +741,11 @@ function Accel(){
   var ax;
   var ay;
   var az;
-  
+
   var rotX;
   var rotY;
   var rotZ;
-  
+
   if (window.DeviceMotionEvent==undefined){
       console.log("This program requires an accelerometer");
   } else {
@@ -753,60 +753,60 @@ function Accel(){
       this.ax = event.accelerationIncludingGravity.x;
       this.ay = event.accelerationIncludingGravity.y;
       this.az = event.accelerationIncludingGravity.z;
-      
+
       rotation = event.rotationRate;
       if (rotation != null){
 	this.rotX = Math.round(rotation.alpha);
 	this.rotY = Math.round(rotation.beta);
-	this.rotZ = Math.round(rotation.gamma);	
+	this.rotZ = Math.round(rotation.gamma);
       } // end if
-    } // end event handler 
+    } // end event handler
   } // end if
-  
+
   //return values with utility methods
-  
+
   this.getAX = function(){
     if (window.ax == null){
       window.ax = 0;
-    }  
+    }
     return window.ax;
   } // end getAx
-  
+
   this.getAY = function(){
     if (window.ay == null){
       window.ay = 0;
-    }  
+    }
     return window.ay;
   } // end getAx
-  
+
   this.getAZ = function(){
     if (window.az == null){
       window.az = 0;
-    }  
+    }
     return window.az;
   } // end getAx
-  
+
   this.getRotX = function(){return rotX;}
   this.getRotY = function(){return rotY;}
   this.getRotZ = function(){return rotZ;}
-  
+
 } // end class def
 
 function Timer(){
   //simple timer
-    
+
     this.reset = function(){
         this.date = new Date();
         this.startTime = this.date.getTime();
-        this.elapsedTime = 0;    
+        this.elapsedTime = 0;
     } // end reset
-    
-    
+
+
     this.getCurrentTime = function(){
         this.date = new Date();
         return this.date.getTime();
     } // end getCurrentTime
-    
+
     this.getElapsedTime = function(){
         current = this.getCurrentTime();
         return (current - this.startTime) / 1000;
@@ -815,7 +815,7 @@ function Timer(){
     //make alias functions for animations...
     this.start = this.reset;
     this.getTimeElapsed = this.getElapsedTime;
-    
+
     this.reset();
 } // end Timer def
 
@@ -825,16 +825,16 @@ var AnimTimer = function()
    this.date = new Date();
    this.lastTime = 0;
    this.currentTime = 0;
-   
-   this.start = function(){ 
+
+   this.start = function(){
 	 this.currentTime = Date.now();
    }
-   
-   this.reset = function(){ 
+
+   this.reset = function(){
 	 this.currentTime = Date.now();
    }
-   
-   this.getTimeElapsed = function(){ 
+
+   this.getTimeElapsed = function(){
      this.lastTime = this.currentTime;
 	 this.currentTime = Date.now();
 	 return (this.currentTime - this.lastTime);
@@ -860,7 +860,7 @@ function GameButton(label){
 	get the current status of the button (true or false.)
 	Responds to touch events on mobile devices.
     */
-    
+
     this.clicked = false;
     this.button = document.createElement("button");
     this.button.setAttribute("type", "button");
@@ -868,39 +868,39 @@ function GameButton(label){
     this.button.style.position = "absolute";
     this.button.style.left = "0px";
     this.button.style.top = "0px";
-    
+
     this.button.onmousedown = function(){
 	this.clicked = true;
     } // end mousedown
-    
+
     this.button.ontouchstart = function(){
 	this.clicked = true;
     } // end touchstart
-    
+
     this.button.onmouseup = function(){
 	this.clicked = false;
     } // end onmouseup
-    
+
     this.isClicked = function(){
 	return this.button.clicked;
     } // end isClicked
-    
+
     this.setPos = function(left, top){
 	this.button.style.left = left + "px";
 	this.button.style.top = top + "px";
     } // end setPos
-    
+
     this.setPosition = function(left, top){
 	//utility alias for setPos
 	this.setPos(left, top);
     }
-    
+
     this.setSize = function(width, height){
 	this.button.style.width = width + "px";
 	this.button.style.height = height + "px";
     } // end setSize
-    
-    document.body.appendChild(this.button);            
+
+    document.body.appendChild(this.button);
 } // end gameButton class def
 
 function Animation(spriteSheet, imgWidth, imgHeight, cellWidth, cellHeight){
@@ -924,30 +924,30 @@ function Animation(spriteSheet, imgWidth, imgHeight, cellWidth, cellHeight){
   this.totalCycleTime = 0;
   this.fps = 0;
   this.isPaused = false;
-  
+
   this.setup = function(){
     this.timer.start();
     this.framesPerRow = this.imgWidth / this.cellWidth;
     this.framesPerColumn = this.imgHeight / this.cellHeight;
   }
-  
+
   this.addCycle = function(cycleName, startingCell, frames){
     cycle = new Array(cycleName, startingCell, frames);
 	this.cycles.push(cycle);
   }
-  
+
   this.drawFrame = function(ctx){//most of the math in this function could be done only once if we want to make it faster
     this.fps += 1;
     if( !this.isPaused ){ this.totalCycleTime += this.timer.getTimeElapsed(); }
     if(this.changeAnimation == true){// find the correct animation in
-	  for( i = 0; i < this.cycles.length; i++ ){ 
-	    if( this.cycles[i][0] == this.currentCycleName ){ 
+	  for( i = 0; i < this.cycles.length; i++ ){
+	    if( this.cycles[i][0] == this.currentCycleName ){
 		  this.currentCycle = this.cycles[i];
 		}
 	  }
 	}
 	if( this.changeAnimation || this.changeLength ){
-	  this.frameDelta = this.animationLength / this.currentCycle[2]; // this will be how much time should pass at a minimum before switching to the next frame 
+	  this.frameDelta = this.animationLength / this.currentCycle[2]; // this will be how much time should pass at a minimum before switching to the next frame
 	  this.changeAnimation = false;
 	  this.changeLength = false;
 	  this.fps = 0;
@@ -959,7 +959,7 @@ function Animation(spriteSheet, imgWidth, imgHeight, cellWidth, cellHeight){
 	elTime = this.totalCycleTime % this.animationLength;
 	currentFrame = Math.floor(elTime / this.frameDelta);
 	//console.log(elTime);
-	
+
 	//document.getElementById("FPS").innerHTML = this.animationLength;//for debugging
 	row = Math.floor( ( this.currentCycle[1] + currentFrame ) / this.framesPerRow );
 	col = (this.currentCycle[1] + currentFrame) - (row * Math.floor(this.imgWidth / this.cellWidth));
@@ -968,14 +968,14 @@ function Animation(spriteSheet, imgWidth, imgHeight, cellWidth, cellHeight){
 
 	ctx.drawImage(this.sheet, frameX, frameY, this.cellWidth, this.cellHeight, 0 - (this.cellWidth / 2), 0 - (this.cellHeight / 2), this.cellWidth, this.cellHeight);
   }
-  
-  
+
+
   this.setCycle = function(cycleName){
     this.currentCycleName = cycleName;
 	this.changeAnimation = true;
 	this.totalCycleTime = 0;
   }
-  
+
   this.renameCycles = function(cycleNames){
     for(i = 0; i < cycleNames.length; i++){
 	  number = parseInt( this.cycles[i][0].slice(5) );
@@ -983,27 +983,27 @@ function Animation(spriteSheet, imgWidth, imgHeight, cellWidth, cellHeight){
 	  this.cycles[i][0] = cycleNames[number-1];
 	}
   }
-  
+
   this.play = function(){
     this.isPaused = false;
 	this.timer.reset();
   }
-  
+
   this.pause = function(){
     this.isPaused = true;
   }
-  
+
   this.reset = function(){
     this.totalCycleTime = 0;
 	this.timer.reset();
   }
-  
+
   this.setAnimationSpeed = function( animLength ){//animLength is in milliseconds
     if( animLength <= 50 ){ animLength = 50; }
 	this.animationLength = animLength;
 	this.changeLength = true;
   }
-  
+
 }// end of Animation class
 
 /*
@@ -1026,12 +1026,12 @@ function Camera(scene){
   this.waitY = 0;
   this.focalPointX = 0;
   this.focalPointY = 0;
-  
+
   this.moveCamera = function(x, y){
     this.cameraOffsetX += x;
 	this.cameraOffsetY += y;
   }
-  
+
   this.followSprite = function(sprite, waitX, waitY){// wait rectangle currently not working
 	this.target = sprite;
 	if( typeof waitX != "undefined" ){
@@ -1039,7 +1039,7 @@ function Camera(scene){
 	  this.waitY = waitY;
 	}
   }
-  
+
   this.update = function(){
     // center the camera on the sprite
 	this.focalPointX = this.cameraOffsetX + this.cWidth/2;
@@ -1049,7 +1049,7 @@ function Camera(scene){
 	  this.cameraOffsetY = this.target.y + (this.target.height/2) - (this.cHeight/2) + this.waitY;
 	}
   }
-  
+
   this.checkFocusBounds = function(){
     centerX = this.target.x + (this.target.width/2);
 	centerY = this.target.y + (this.target.height/2);
@@ -1072,21 +1072,21 @@ function Tile( mapX, mapY, x, y, type ){
   this.isClickable = false;
   this.clickCallback = false;
   this.animationPlaying = false;
-  
+
   this.setCollision = function( callBack ){
     this.collisionCallback = callBack;
 	this.isCollidable = true;
   }
-  
+
   this.setAnimation = function(){
     this.isAnimated = true;
   }
-  
+
   this.setClick = function( callBack ){
     this.isClickable = true;
 	this.clickCallback = callBack;
   }
-  
+
   this.checkCollision = function( sprite, w, h ){
     shw = sprite.width/2;
 	shh = sprite.height/2;
@@ -1116,7 +1116,7 @@ function TileMap(scene){
   this.sheetWidth = 0;
   this.sheetHeight = 0;
   this.camera = new Camera(scene);
-  
+
   this.loadTileSheet = function(tileWidth, tileHeight, sheetWidth, sheetHeight, tileSheet, tileSymbols){
     this.tileSheet.src = tileSheet;
 	this.tileWidth = tileWidth;
@@ -1133,10 +1133,10 @@ function TileMap(scene){
 	  }
 	}
   }
-  
+
   this.loadMapData  = function(mapArray){// mapArray must be a 2-dimensional Array
     this.mapData = new Array();
-	
+
     for(i = 0; i < mapArray.length; i++){
 	  this.mapData.push( new Array() );
 	  temp = new Array();
@@ -1152,7 +1152,7 @@ function TileMap(scene){
 	  this.tiles.push(temp)
 	}
   }
-  
+
   this.drawMap = function(){//this could be WAY faster
     this.camera.update();
     ctx = this.camera.context;
@@ -1174,7 +1174,7 @@ function TileMap(scene){
 	  }
 	}
   }
-  
+
   this.addTileCollision = function( collisionCallback, typeOrX, y ){// accept tile type or coordinates
     if( typeof y == "undefined" ){ // then the first argument is a tile type
 	  for( i = 0; i < this.tiles.length; i++ ){
@@ -1189,7 +1189,7 @@ function TileMap(scene){
 	  this.tiles[typeOrX][y].setCollision( collisionCallback );
 	}
   }
-  
+
   this.loadCollisionMap = function( collisionMap ){// tile Symbol and collision Callback - - NOTE: This function will overwrite specific Collision Callbacks
     //convert collisionMap symbols to their associated integers
 	for( l = 0; l < collisionMap.length; l++ ){
@@ -1218,12 +1218,12 @@ function TileMap(scene){
 	  }
 	}
   }
-  
+
   this.mapScroll = function( dx, dy ){ this.camera.moveCamera(dx, dy); }
   this.cameraFollowSprite = function(sprite, waitX, waitY){ this.camera.followSprite(sprite, waitX, waitY); }
-  
-  this.loadZOrderMap = function( zMap ){} 
-  
+
+  this.loadZOrderMap = function( zMap ){}
+
   this.addTileAnimation = function( imgWidth, imgHeight, cellWidth, cellHeight, tileName, animSheet ){
     animation = new Animation(animSheet, imgWidth, imgHeight, cellWidth, cellHeight);
 	animation.setup();
@@ -1233,29 +1233,29 @@ function TileMap(scene){
 		}
 	}
   }
-  
+
   this.addSpecificTileAnimation = function(imgWidth, imgHeight, cellWidth, cellHeight, tileX, tileY, animSheet){
     animation = new Animation(animSheet, imgWidth, imgHeight, cellWidth, cellHeight);
 	animation.setup();
 	this.specificTileAnimations[tileX][tileY] = animation;
   }
-  
+
   this.drawTileAnimation = function( tile, ctx ){
 	  notSpecific = true;
-	  if (typeof this.specificTileAnimations[tile.mapX][tile.mapY] !== 'undefined' && this.specificTileAnimations[tile.mapX][tile.mapY] !== null) { 
-	  	notSpecific = false; 
+	  if (typeof this.specificTileAnimations[tile.mapX][tile.mapY] !== 'undefined' && this.specificTileAnimations[tile.mapX][tile.mapY] !== null) {
+	  	notSpecific = false;
 		this.specificTileAnimations[tile.mapX][tile.mapY].reset();
 		this.specificTileAnimations[tile.mapX][tile.mapY].drawFrame(ctx);
 	  }
-	  if (typeof this.tileAnimations[tile.type] !== 'undefined' && this.tileAnimations[tile.type] !== null && notSpecific) { 
+	  if (typeof this.tileAnimations[tile.type] !== 'undefined' && this.tileAnimations[tile.type] !== null && notSpecific) {
 	    this.tileAnimations[tile.type].reset();
 		this.tileAnimations[tile.type].drawFrame(ctx);
 	  }
   }
-  
+
   this.playTileAnimation = function( tile ){ tile.animationPlaying = true; }
   this.stopTileAnimation = function( tile ){ tile.animationPlaying = false; }
-  
+
   this.checkCollisions = function(sprite){ //check for collisions between sprite and tile
     tileCoordX = Math.floor( sprite.x/this.tileWidth );
 	tileCoordY = Math.floor( sprite.y/this.tileHeight );
@@ -1277,9 +1277,9 @@ function TileMap(scene){
 	  }
 	}
   }
-  
+
   this.makeSpriteMapRelative = function(sprite){ sprite.setCameraRelative( this.camera ); }
-  
+
   this.setPosition = function(){}
 }
 
@@ -1294,7 +1294,7 @@ K_V = 86; K_W = 87; K_X = 88; K_Y = 89; K_Z = 90;
 K_LEFT = 37; K_RIGHT = 39; K_UP = 38;K_DOWN = 40; K_SPACE = 32;
 K_ESC = 27; K_PGUP = 33; K_PGDOWN = 34; K_HOME = 36; K_END = 35;
 K_0 = 48; K_1 = 49; K_2 = 50; K_3 = 51; K_4 = 52; K_5 = 53;
-K_6 = 54; K_7 = 55; K_8 = 56; K_9 = 57; 
+K_6 = 54; K_7 = 55; K_8 = 56; K_9 = 57;
 
 
 //Animation Constants
