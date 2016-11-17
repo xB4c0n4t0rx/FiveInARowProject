@@ -1,0 +1,65 @@
+
+<!DOCTYPE HTML>
+<html lang = "en-us">
+<head>
+  <title>Player.html</title>
+  <meta charset = "utf-8">
+  <script type = "text/javascript"
+          src = "http://aharrisbooks.net/h5g/simpleGame_1_0.js"></script>
+  <script type = "text/javascript"
+          src = "gameClient.js"></script>    
+  <script type = "text/javascript">
+  var ball;
+  var scene;
+  var gc;
+  var netInfo;
+
+  function init(){
+    //set up scene and sprite
+    scene = new Scene();
+    ball = new Sprite(scene, "ball.png", 50, 50);
+    ball.setPosition(400, 300);
+    ball.setSpeed(0);
+
+    netInfo = document.getElementById("netInfo");
+
+    //set up game client
+    gc = new GameClient("ws://localhost:8001/gameserver.js");
+    gc.connect();
+
+    scene.start();
+  } // end init
+
+
+  function update(){
+    if (keysDown[K_UP]){
+      ball.changeYby(-5);
+    }
+    if (keysDown[K_DOWN]){
+      ball.changeYby(5);
+    }
+    if (keysDown[K_LEFT]){
+      ball.changeXby(-5);
+    } 
+    if (keysDown[K_RIGHT]){
+      ball.changeXby(5);
+    } 
+
+    //update network info
+
+    netInfo.innerHTML = stateData;
+
+    //send data to server
+    gc.sendSprite("player1", ball);
+
+    scene.clear();
+    ball.update();
+
+  } // end update
+  </script>
+</head>
+<body onload = "init()">
+  <h1>Player-controlled...</h1>
+  <pre id = "netInfo"></pre>
+</body>
+</html>
