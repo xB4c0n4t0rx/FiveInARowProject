@@ -15,6 +15,7 @@
 
 	<script type="text/javascript" src="simpleGame.js"></script>
 	<script>
+	
 
 		var game;
 		var backgroundSprite;
@@ -23,8 +24,10 @@
 		var BLK = 1;
 		var WTE = 2;
 		var currentPlayer = BLK;
-		var WTEcells;
-		var BLKcells;
+		var WTEcells = [];
+		var BLKcells = [];
+		wtectr = 0;
+		blkctr = 0;
 
 		function Cell(){
 			tCell = new Sprite(game, "blank.png", 20, 20);
@@ -45,8 +48,6 @@
 						} else {
 							currentPlayer = BLK;
 						} // end if
-
-
 					} // end if
 				} // end if
 			} // end checkClick
@@ -65,6 +66,7 @@
 				xPos = (row * 40) + xOffset;
 				yPos = (col * 40) + yOffset;
 				cells[i].setPosition(xPos, yPos);
+				
 			} // end for loop
 
 		}
@@ -73,8 +75,28 @@
 			for (i = 0; i < cells.length; i++){
 				cells[i].checkClick();
 				cells[i].update();
+				
+				if (cells[i].isClicked()) {
+					if (cells[i].state == BLK){
+						if (BLKcells.indexOf(cells[i]) != -1){}
+						else {
+							BLKcells.push(cells[i]);
+						}
+					}//end of BLK array adding
+					
+					else {
+						if (WTEcells.indexOf(cells[i]) != -1){}
+							else {
+								WTEcells.push(cells[i]);
+							}
+					}//end of WTE array adding		
+				}//end of isClicked 
+								
 			} // end for loop
-		} // end updateCells
+			
+			checkWins();
+			
+		} // end updateIntersects
 
 
 		function checkWins(){
@@ -87,6 +109,7 @@
 
 			game = new Scene();
 
+			
 			backgroundSprite = new Sprite(game, "Go.png", game.width, game.height);
 			backgroundSprite.setSpeed(0);
 			backgroundSprite.setPosition(game.width/2,game.height/2);
