@@ -52,6 +52,12 @@ function Sprite(scene, imageFile, width, height){
     this.x = x;
     this.y = y;
   } // end setPosition function
+  
+  this.getPosition = function(){
+	currpos = [this.x,this.y];
+	return currpos;
+  }
+  
 
   this.setX = function (nx){ this.x = nx; }
   this.setY = function (ny){ this.y = ny; }

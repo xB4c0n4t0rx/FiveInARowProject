@@ -81,6 +81,7 @@
 						if (BLKcells.indexOf(cells[i]) != -1){}
 						else {
 							BLKcells.push(cells[i]);
+							checkWins();
 						}
 					}//end of BLK array adding
 					
@@ -88,20 +89,37 @@
 						if (WTEcells.indexOf(cells[i]) != -1){}
 							else {
 								WTEcells.push(cells[i]);
+								checkWins();
 							}
 					}//end of WTE array adding		
 				}//end of isClicked 
 								
 			} // end for loop
-			
-			checkWins();
-			
+						
 		} // end updateIntersects
 
 
 		function checkWins(){
 
-
+		/*
+			if (BLKcells.length >= 5){
+			
+				for (i=0; i<BLKcells.length; i++){
+				
+					for (j=0; j<BLKcells.length; j++){
+					
+						if (BLKcells[i].getPosition + [40,40] == BLKcells[j].getPosition){
+						
+							if (BLKcells[i].getPosition + [40,40] == BLKcells[j+1].getPosition)
+						}//end of diagonal check
+					
+					}//end of inner loop
+				
+				}//end of outer loop
+			
+						
+			}//end of BLK check win
+		*/
 
 		}
 
