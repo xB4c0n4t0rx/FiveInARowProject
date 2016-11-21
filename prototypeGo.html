@@ -54,6 +54,17 @@
 
 			return tCell;
 		} // end cell
+		
+		Array.prototype.SumArray = function (arr) {
+			var sum = [];
+			if (arr != null && this.length == arr.length) {
+				for (var i = 0; i < arr.length; i++) {
+					sum.push(this[i] + arr[i]);
+				}
+			}
+
+			return sum;
+		}
 
 		function buildIntersects(){
 			cells = new Array(361);
@@ -98,20 +109,122 @@
 						
 		} // end updateIntersects
 
-
 		function checkWins(){
-
-		/*
+		
 			if (BLKcells.length >= 5){
-			
+						
 				for (i=0; i<BLKcells.length; i++){
 				
 					for (j=0; j<BLKcells.length; j++){
 					
-						if (BLKcells[i].getPosition + [40,40] == BLKcells[j].getPosition){
-						
-							if (BLKcells[i].getPosition + [40,40] == BLKcells[j+1].getPosition)
+					
+					
+						if (String(BLKcells[i].getPosition().SumArray([40,-40])) == String(BLKcells[j].getPosition())){
+													
+							for (m = 0; m<BLKcells.length; m++){
+							
+								if (String(BLKcells[j].getPosition().SumArray([40,-40])) == String(BLKcells[m].getPosition())) {
+									
+									for (l=0; l<BLKcells.length; l++){
+									
+										if (String(BLKcells[m].getPosition().SumArray([40,-40])) == String(BLKcells[l].getPosition())){
+										
+											for (p = 0; p<BLKcells.length; p++){
+											
+												if (String(BLKcells[l].getPosition().SumArray([40,-40])) == String(BLKcells[p].getPosition())){
+																							
+													alert("BLK Player wins!");
+													document.location.href = "";
+												
+												}
+											
+											}
+										
+										}
+									
+									}
+									
+								}
+							
+							}
 						}//end of diagonal check
+						
+						
+						
+						
+						
+						
+						if (String(BLKcells[i].getPosition().SumArray([0,-40])) == String(BLKcells[j].getPosition())){
+							
+							for (m = 0; m<BLKcells.length; m++){
+							
+								if (String(BLKcells[j].getPosition().SumArray([0,-40])) == String(BLKcells[m].getPosition())) {
+									
+									for (l=0; l<BLKcells.length; l++){
+									
+										if (String(BLKcells[m].getPosition().SumArray([0,-40])) == String(BLKcells[l].getPosition())){
+										
+											for (p = 0; p<BLKcells.length; p++){
+											
+												if (String(BLKcells[l].getPosition().SumArray([0,-40])) == String(BLKcells[p].getPosition())){
+																							
+													alert("BLK Player wins!");
+													document.location.href = "";
+												
+												}
+											
+											}
+										
+										}
+									
+									}
+									
+								}
+							
+							}
+							
+						}//end of vertical check
+						
+						
+						
+						
+						
+						
+						
+						if (String(BLKcells[i].getPosition().SumArray([40,0])) == String(BLKcells[j].getPosition())){
+							
+							for (m = 0; m<BLKcells.length; m++){
+							
+								if (String(BLKcells[j].getPosition().SumArray([40,0])) == String(BLKcells[m].getPosition())) {
+									
+									for (l=0; l<BLKcells.length; l++){
+									
+										if (String(BLKcells[m].getPosition().SumArray([40,0])) == String(BLKcells[l].getPosition())){
+										
+											for (p = 0; p<BLKcells.length; p++){
+											
+												if (String(BLKcells[l].getPosition().SumArray([40,0])) == String(BLKcells[p].getPosition())){
+																							
+													alert("BLK Player wins!");
+													document.location.href = "";
+												
+												}
+											
+											}
+										
+										}
+									
+									}
+									
+								}
+							
+							}
+							
+						}//end of horizontal check
+						
+						
+						
+						
 					
 					}//end of inner loop
 				
@@ -119,8 +232,130 @@
 			
 						
 			}//end of BLK check win
-		*/
-
+			
+			
+			if (WTEcells.length >= 5){
+						
+				for (i=0; i<WTEcells.length; i++){
+				
+					for (j=0; j<WTEcells.length; j++){
+					
+					
+					
+						if (String(WTEcells[i].getPosition().SumArray([40,-40])) == String(WTEcells[j].getPosition())){
+													
+							for (m = 0; m<WTEcells.length; m++){
+							
+								if (String(WTEcells[j].getPosition().SumArray([40,-40])) == String(WTEcells[m].getPosition())) {
+									
+									for (l=0; l<WTEcells.length; l++){
+									
+										if (String(WTEcells[m].getPosition().SumArray([40,-40])) == String(WTEcells[l].getPosition())){
+										
+											for (p = 0; p<WTEcells.length; p++){
+											
+												if (String(WTEcells[l].getPosition().SumArray([40,-40])) == String(WTEcells[p].getPosition())){
+																							
+													alert("WTE Player wins!");
+													document.location.href = "";
+												
+												}
+											
+											}
+										
+										}
+									
+									}
+									
+								}
+							
+							}
+						}//end of diagonal check
+						
+						
+						
+						
+						
+						
+						if (String(WTEcells[i].getPosition().SumArray([0,-40])) == String(WTEcells[j].getPosition())){
+							
+							for (m = 0; m<WTEcells.length; m++){
+							
+								if (String(WTEcells[j].getPosition().SumArray([0,-40])) == String(WTEcells[m].getPosition())) {
+									
+									for (l=0; l<WTEcells.length; l++){
+									
+										if (String(WTEcells[m].getPosition().SumArray([0,-40])) == String(WTEcells[l].getPosition())){
+										
+											for (p = 0; p<WTEcells.length; p++){
+											
+												if (String(WTEcells[l].getPosition().SumArray([0,-40])) == String(WTEcells[p].getPosition())){
+																							
+													alert("WTE Player wins!");
+													document.location.href = "";
+												
+												}
+											
+											}
+										
+										}
+									
+									}
+									
+								}
+							
+							}
+							
+						}//end of vertical check
+						
+						
+						
+						
+						
+						
+						
+						if (String(WTEcells[i].getPosition().SumArray([40,0])) == String(WTEcells[j].getPosition())){
+							
+							for (m = 0; m<WTEcells.length; m++){
+							
+								if (String(WTEcells[j].getPosition().SumArray([40,0])) == String(WTEcells[m].getPosition())) {
+									
+									for (l=0; l<WTEcells.length; l++){
+									
+										if (String(WTEcells[m].getPosition().SumArray([40,0])) == String(WTEcells[l].getPosition())){
+										
+											for (p = 0; p<WTEcells.length; p++){
+											
+												if (String(WTEcells[l].getPosition().SumArray([40,0])) == String(WTEcells[p].getPosition())){
+																							
+													alert("WTE Player wins!");
+													document.location.href = "";
+												
+												}
+											
+											}
+										
+										}
+									
+									}
+									
+								}
+							
+							}
+							
+						}//end of horizontal check
+						
+						
+						
+						
+					
+					}//end of inner loop
+				
+				}//end of outer loop
+			
+						
+			}//end of WTE check win
+				
 		}
 
 		function init(){
