@@ -31,7 +31,7 @@
 		blkctr = 0;
 		var gc;
 		var message;
-    var key = "white";
+		var turn;
 
 		function Cell(){
 			tCell = new Sprite(game, "blank.png", 20, 20);
@@ -40,21 +40,21 @@
 
 			tCell.images = new Array("blank.png", "goBlackPiece.png", "goWhitePiece.png");
 
-			tCell.checkClick = function(){
-				if (this.isClicked()){
-          if (this.state == BLANK && currentPlayer == WTE){
-						this.state = currentPlayer;
-						this.setImage(this.images[currentPlayer]);
-            //send Sprite to server
-            gc.sendSprite(key, this);
-						//change the player
-						currentPlayer = BLK;
-					} // end if
-				} // end if
-			} // end checkClick
-
 			return tCell;
 		} // end cell
+
+		function checkClick(cell, id){
+			if (cell.isClicked()){
+				if (cell.state == BLANK && currentPlayer == WTE){
+					cell.state = currentPlayer;
+					cell.setImage(cell.images[currentPlayer]);
+					//send Sprite to server
+					gc.sendSprite(id, cell);
+					//change the player
+					currentPlayer = BLK;
+				} // end if
+			} // end if
+		} // end checkClick
 
 		Array.prototype.SumArray = function (arr) {
 			var sum = [];
@@ -83,23 +83,9 @@
 
 		}
 
-    function checkOther(){
-      var tempCell = new Cell();
-      gc.updateRemoteSprite("black", tempCell);
-      for(i=0;i<cells.length;i++){
-        if(tempCell.x == cells[i].x && tempCell.y == cells[i].y && cells[i].state == BLANK){
-          cells[i].state = currentPlayer;
-          cells[i].setImage(cells[i].images[currentPlayer]);
-          //change the player
-          currentPlayer = WTE;
-        }
-      }
-		}
-
 		function updateIntersects(){
-      checkOther();
 			for (i = 0; i < cells.length; i++){
-				cells[i].checkClick();
+				checkClick(cells[i], i);
 				cells[i].update();
 
 				if (cells[i].isClicked()) {
@@ -439,11 +425,16 @@
 
 		}
 
-    function init(){
+		function init(){
+
 			gc = new GameClient("ws://localhost:8001/gameServer.js");
       gc.connect();
 
 			game = new Scene();
+
+			turn = new Cell();
+			turn.setPosition(-20,-20);
+			turn.setImage(turn.images[currentPlayer]);
 
 
 			backgroundSprite = new Sprite(game, "Go.png", game.width, game.height);
@@ -454,6 +445,12 @@
 
 
 			game.start();
+
+		}
+
+		function updateClient(){
+
+			
 
 		}
 

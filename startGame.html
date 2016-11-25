@@ -12,29 +12,37 @@
 
 	<meta charset="UTF-8">
 	<title>Five In A Row</title>
-  <script type = "text/javascript" src = "gameClient.js"></script>
+	<script type="text/javascript" src="simpleGame.js"></script>
+	<script type = "text/javascript" src = "gameClient.js"></script>
+	<script type = "text/javascript" src = "cellClass.js"></script>
   <script>
 
-  function init(){
+
+  function connect(){
+
+		game = new Scene();
+
+		BLANK = 0;
+		BLK = 1;
+
     gc = new GameClient("ws://localhost:8001/gameServer.js");
     gc.connect();
-    gc.sendMessage("black", "Placeholder");
-    gc.sendMessage("white", "Placeholder");
+		turn = new Cell();
+		turn.setImage(turn.images[BLK]);
+		
   }
 
   function blackConnects(){
-    gc.sendMessage("black", "Black Connected!");
-    gc.sendMessage("white", "Black Connected!");
+		gc.sendSprite("turn", turn);
   }
 
   function whiteConnects(){
-    gc.sendMessage("black", "White Connected!");
-    gc.sendMessage("white", "White Connected!");
+
   }
 
   </script>
 </head>
-<body onload = "init()">
+<body onload = "connect()">
   <header> Five In A Row </header>
   <p>
         <a onclick = "blackConnects()" href = "black.html">Player One</a>
