@@ -7,22 +7,22 @@
     <script type = "text/javascript"
             src = "gameClient.js"></script>
     <script type = "text/javascript">
-  
+
     var output;
     var gc;
     var message;
 
     function init(){
       output = document.getElementById("output");
-      gc = new GameClient("ws://localhost:8001/gameserver.js");
+      gc = new GameClient("ws://localhost:8001/gameServer.js");
       gc.connect();
     } // end init
-  
+
     function sendMessage(){
       txtKey= document.getElementById("txtKey");
       txtValue = document.getElementById("txtValue");
       gc.sendMessage(txtKey.value, txtValue.value);
-      //output.innerHTML = "<p>MESSAGE SENT:  " + message + "<p>";   
+      //output.innerHTML = "<p>MESSAGE SENT:  " + message + "<p>";
     } // end sendMessage
 
     function getMessage(text){
@@ -48,8 +48,8 @@
       url = prompt("server address?");
       gc = new GameClient(url);
       gc.connect();
-    } 
-    
+    }
+
     </script>
   </head>
 
@@ -85,12 +85,12 @@
         <button type = "button"
                 onclick = "checkGetState()">
            get status
-        </button> 
-        
+        </button>
+
         <button type = "button"
 	        onclick = "getKeys()">
 	  get keys
-        </button>	  
+        </button>
       </fieldset>
     </form>
     <h1>Implementation notes</h1>
@@ -98,14 +98,14 @@
     <h2>Introducing gameserver.js</h2>
 
     <p>
-    This client is meant to work with gameserver.js.  This is a 
+    This client is meant to work with gameserver.js.  This is a
     simple mechanism to pass information among multiple players
-    (as many as you want.)  The gameserver.js is a bare-bones 
-    webSocket server.  
+    (as many as you want.)  The gameserver.js is a bare-bones
+    webSocket server.
     </p>
 
     <p>
-    gameserver.js requires node.js and nodejs-websocket.  Use npm to 
+    gameserver.js requires node.js and nodejs-websocket.  Use npm to
     install nodejs-websocket if it is not currently in your build.
     Be sure to change the URL to the server where your game server is
     located.  Of course you'll need to run gameserver.js through node
@@ -117,8 +117,8 @@
     In addition to the server, there is a simple object called
     GameClient included in the gameClient.js.  Instantiate this object
     (for sake of documentation I'll call the instance gc) when the page
-    loads.  The constructor will require the URL of the running 
-    js file (for example: 
+    loads.  The constructor will require the URL of the running
+    js file (for example:
     <code>ws.http://localhost:8001/gameserver.js</code>).
     </p>
 
@@ -134,14 +134,14 @@
           key is an identifier for this client, and value
           is any string value (can be CSV or JSON string)</li>
       <li><strong>close()</strong>
-          closes the connection to the server.  Connection can be 
+          closes the connection to the server.  Connection can be
           re-opened with another connect() call</li>
       <li><strong>getState(message, searchKey)</strong>
           Utility function for finding the state string associated
 	  with a client key. Returns state string associated with
 	  the key or an error message.</li>
       <li><strong>getKeys(message)</strong>
-          Utility that returns all client keys associated with 
+          Utility that returns all client keys associated with
 	  the message. Returns an array of strings.</li>
     </ul>
 
@@ -154,30 +154,30 @@
       <li><strong>getMessage(text)</strong>
           Automatically called whenever any clients are updated
 	  text is the message string (also stored in stateData.)
-	  Use this function to respond to an update if you need 
+	  Use this function to respond to an update if you need
 	  anything more than lookups.  You should overwrite this
-	  function even if you aren't going to use it, just to 
-	  avoid errors. 
+	  function even if you aren't going to use it, just to
+	  avoid errors.
 	  </li>
     </ul>
 
     <h2>About stateData</h2>
     <p>
     Every time a connected client updates, the getMessage() function
-    of each client is triggered, passing a message string as a 
+    of each client is triggered, passing a message string as a
     parameter.  This message string consists of a multiline string,
-    one line per client.  The string begins with the client key 
+    one line per client.  The string begins with the client key
     followed by a pipe character and the rest of the character string
     </p>
 
     <p>
     Including the gameClient.js file also provides access to the global
-    <code>stateData</code> string, which is automatically updated on 
+    <code>stateData</code> string, which is automatically updated on
     every data
     refresh. You can access this string directly if you wish (though
-    you should not change it directly.)  It is easier to use the 
+    you should not change it directly.)  It is easier to use the
     convenience functions <code>getKeys()</code> to get an array of
-    client keys in the system, and the <code>getNode(key)</code> 
+    client keys in the system, and the <code>getNode(key)</code>
     function to retrieve the data (normally position and state data)
     associated with a particular key.
     </p>
@@ -187,9 +187,9 @@
     Note there is absolutely no security in this system.  All data is
     passed as trusted data, so it's up to you to make sure it does what
     it's supposed to do. There is also no checking for dropped clients,
-    so a dropped client will simply freeze.  You may want to put some 
+    so a dropped client will simply freeze.  You may want to put some
     client-side code to check for this.
     </p>
-  
+
   </body>
 </html>

@@ -4,12 +4,12 @@
 var stateData = "";
 
 function GameClient(url){
-    
+
     // class encapsulates a connection to the game class
     // connect and sendMessage are meant to be used as-is
     // overwrite other methods as needed for event-handling
     // url is a websocket url
-    
+
     // Andy Harris, 2015
     // released under GPL
 
@@ -17,12 +17,12 @@ function GameClient(url){
      * run gameserver.js on a server with node.js and
      * nodejs-websocket installed
      * include this (gameClient.js) file in your HTML file
-     * instantiate a GameClient object with the URL of the 
+     * instantiate a GameClient object with the URL of the
      * server (ws:localhost:8001/gameserver.js) as the parameter
-     * Connect to the server with gc.connect() (assuming gc is the 
+     * Connect to the server with gc.connect() (assuming gc is the
      * instance of game client
      * send this object's state data with gc.sendMessage(key, value)
-     * where key is the identifier for this player and value is a 
+     * where key is the identifier for this player and value is a
      * string of state data
      * create a getMessage(text) function.  On every update from any
      * client, the text will be a status string of every client in the
@@ -40,7 +40,7 @@ function GameClient(url){
     this.connect = function(){
       if ("WebSocket" in window){
         this.websocket = new WebSocket(url);
-  
+
         //attach event handlers
         this.websocket.onopen = this.onOpen;
         this.websocket.onclose = this.onClose;
@@ -49,21 +49,21 @@ function GameClient(url){
       } else {
         alert ("web sockets not supported on this browser");
       } // end if
-  
+
     } // end connect
-  
+
     this.onOpen = function(evt){
       //overWrite this for code to happen after successful open
     } // end onOpen
-  
+
     this.onClose = function(evt){
       //overwrite this for code to happen after successful close
     } // end onClose
-  
+
     this.onMessage = function(evt){
       // evt.data is a block of data: key|value pairs.
       stateData = evt.data;
-      
+
       //call the local getMessage function if it exists
       getMessage(evt.data);
     } // end onMessage
@@ -71,12 +71,12 @@ function GameClient(url){
     this.onError = function(evt){
       return "Error: " + evt.data;
     } // end onError
-  
+
     this.sendMessage = function(key, value){
       message = key + "|" + value;
       this.websocket.send(message);
     } // end sendMessage
-  
+
     this.close = function(){
       this.websocket.close();
     } // end close
@@ -84,16 +84,16 @@ function GameClient(url){
     this.getState = function(searchKey){
       // given a message and key, returns the status
       // string associated with that key
-       
+
       result = "element not found";
       messageList = stateData.split("\n");
       for (i in messageList){
         line = messageList[i].split("|");
-	key = line[0];
-	value = line[1];
-	if(searchKey == key){
-	  result = value.trim();
-	} // end if
+        key = line[0];
+        value = line[1];
+        if(searchKey == key){
+          result = value.trim();
+        } // end if
       } // end for
       return result;
     } // end getState
@@ -129,7 +129,7 @@ function GameClient(url){
 
   this.updateRemoteSprite = function(key, sprite){
     // finds the message with the appropriate key (if it exists)
-    // and updates the sprite with the values sent through 
+    // and updates the sprite with the values sent through
     // sendSprite
     message = this.getState(key);
     if (message == "element not found"){

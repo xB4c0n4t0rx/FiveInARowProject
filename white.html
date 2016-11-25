@@ -31,6 +31,7 @@
 		blkctr = 0;
 		var gc;
 		var message;
+    var key = "white";
 
 		function Cell(){
 			tCell = new Sprite(game, "blank.png", 20, 20);
@@ -41,17 +42,13 @@
 
 			tCell.checkClick = function(){
 				if (this.isClicked()){
-					if (this.state == BLANK){
+          if (this.state == BLANK && currentPlayer == WTE){
 						this.state = currentPlayer;
 						this.setImage(this.images[currentPlayer]);
-/*
+            //send Sprite to server
+            gc.sendSprite(key, this);
 						//change the player
-						if (currentPlayer == BLK){
-							currentPlayer = WTE;
-						} else {
-							currentPlayer = BLK;
-						} // end if
-*/
+						currentPlayer = BLK;
 					} // end if
 				} // end if
 			} // end checkClick
@@ -86,7 +83,21 @@
 
 		}
 
+    function checkOther(){
+      var tempCell = new Cell();
+      gc.updateRemoteSprite("black", tempCell);
+      for(i=0;i<cells.length;i++){
+        if(tempCell.x == cells[i].x && tempCell.y == cells[i].y && cells[i].state == BLANK){
+          cells[i].state = currentPlayer;
+          cells[i].setImage(cells[i].images[currentPlayer]);
+          //change the player
+          currentPlayer = WTE;
+        }
+      }
+		}
+
 		function updateIntersects(){
+      checkOther();
 			for (i = 0; i < cells.length; i++){
 				cells[i].checkClick();
 				cells[i].update();
@@ -428,47 +439,7 @@
 
 		}
 
-    function sendMessage(){
-      txtKey= document.getElementById("txtKey");
-      txtValue = document.getElementById("txtValue");
-      gc.sendMessage(txtKey.value, txtValue.value);
-      //output.innerHTML = "<p>MESSAGE SENT:  " + message + "<p>";
-    } // end sendMessage
-
-    function getMessage(text){
-      output.innerHTML = text;
-      message = text;
-    } // end getMessage
-
-		function sendSprite(){
-			gc.sendSprite("player1", ball);
-		}
-
-		function getSprite(){
-			gc.updateRemoteSprite("player1", ball);
-		}
-
-    function checkGetState(){
-      searchKey = prompt("Search for which client's data? ");
-      result = gc.getState(searchKey);
-      alert(result);
-    } // end checkGetStatus
-
-    function getKeys(){
-      keys = gc.getKeys();
-      for (i in keys){
-        alert(keys[i]);
-      } // end for
-    } // end getKeys
-
-    function connect(){
-      //establishes a new connection
-      url = prompt("server address?");
-      gc = new GameClient(url);
-      gc.connect();
-    }
-
-		function init(){
+    function init(){
 			gc = new GameClient("ws://localhost:8001/gameServer.js");
       gc.connect();
 
