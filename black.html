@@ -98,7 +98,7 @@
 						}
 					}//end of BLK array adding
 
-					else {
+					if (cells[i].state == WTE) {
 						if (WTEcells.indexOf(cells[i]) != -1){}
 							else {
 								WTEcells.push(cells[i]);
@@ -448,11 +448,35 @@
 
 		}
 
+		function updateClient(){
+			for(i=0;i<cells.length;i++){
+				gc.updateRemoteSprite(i, cells[i]);
+				if(cells[i].image == cells[i].images[WTE]){
+					cells[i].state = WTE;
+				}
+				if(cells[i].image == cells[i].images[BLK]){
+					cells[i].state = BLK;
+				}
+			}
+		}
+
+		function updateTurn(){
+			gc.updateRemoteSprite("turn", turn);
+			if(turn.image == turn.images[WTE]){
+				currentPlayer = WTE;
+			}
+			if(turn.image == turn.images[BLK]){
+				currentPlayer = BLK;
+			}
+		}
+
 		function update(){
 
 			game.clear();
 			backgroundSprite.update();
 			updateIntersects();
+			//updateClient();
+			updateTurn();
 
 		}
 
