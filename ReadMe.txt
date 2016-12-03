@@ -1,0 +1,2 @@
+localHost works perfectly just use node js to start up server.js and then run startGame.html to pick which player you want.
+nicksServer does work if my server is up which by now it is not cause we only used it for wireshark so dont expect it to work.
