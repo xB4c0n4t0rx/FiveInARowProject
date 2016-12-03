@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta charset="UTF-8">
+	<title>Five In A Row</title>
+	<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+	<script>
+    // Create SocketIO instance, connect
+
+    var socket = io.connect('http://50.90.233.12:3000');
+
+		var message = 'null';
+
+    // Add a connect listener
+    socket.on('connect',function() {
+      console.log('Client has connected to the server!');
+    });
+    // Add a connect listener
+    socket.on('message',function(data) {
+      console.log('Received a message from the server!',data);
+			message = data;
+    });
+    // Add a disconnect listener
+    socket.on('disconnect',function() {
+      console.log('The client has disconnected!');
+    });
+
+    // Sends a message to the server via sockets
+    function sendMessageToServer(message) {
+      socket.send(message);
+    };
+	</script>
+	<script type="text/javascript" src="simpleGame.js"></script>
+	<script>
+
+
+		var game;
+		var backgroundSprite;
+		var cells;
+		var BLANK = 0;
+		var BLK = 1;
+		var WTE = 2;
+		var currentPlayer = BLK;
+		var WTEcells = [];
+		var BLKcells = [];
+		wtectr = 0;
+		blkctr = 0;
+
+		function Cell(){
+			tCell = new Sprite(game, "blank.png", 20, 20);
+			tCell.setSpeed(0);
+			tCell.state = BLANK;
+
+			tCell.images = new Array("blank.png", "goBlackPiece.png", "goWhitePiece.png");
+
+			return tCell;
+		} // end cell
+
+		function checkClick(cell, id){
+			if (cell.isClicked()){
+				if (cell.state == BLANK && currentPlayer == BLK){
+					cell.state = currentPlayer;
+					cell.setImage(cell.images[currentPlayer]);
+					//send id to server
+					socket.send(id);
+					//switch turn
+					currentPlayer = WTE;
+					//send turn to server
+					setTimeout(function (){
+						socket.send('white');
+					}, 1000);
+				} // end if
+			} // end if
+		} // end checkClick
+
+		function updateClient(){
+			if(message!='black' && message != 'null' && message!='white'){
+				if (cells[message].state == BLANK){
+					cells[message].state = currentPlayer;
+					cells[message].setImage(cells[message].images[currentPlayer]);
+				}
+			}
+			if(message == 'black'){
+				currentPlayer = BLK;
+			}
+		}
+
+		Array.prototype.SumArray = function (arr) {
+			var sum = [];
+			if (arr != null && this.length == arr.length) {
+				for (var i = 0; i < arr.length; i++) {
+					sum.push(this[i] + arr[i]);
+				}
+			}
+
+			return sum;
+		}
+
+		function buildIntersects(){
+			cells = new Array(361);
+			xOffset = 58;
+			yOffset = 58;
+			for (i = 0; i < cells.length; i++){
+				cells[i] = new Cell();
+				row = parseInt(i / 19);
+				col = i % 19;
+				xPos = (row * 40) + xOffset;
+				yPos = (col * 40) + yOffset;
+				cells[i].setPosition(xPos, yPos);
+
+			} // end for loop
+
+		}
+
+		function updateIntersects(){
+			for (i = 0; i < cells.length; i++){
+				checkClick(cells[i], i);
+				cells[i].update();
+
+				if (cells[i].isClicked()) {
+					if (cells[i].state == BLK){
+						if (BLKcells.indexOf(cells[i]) != -1){}
+						else {
+							BLKcells.push(cells[i]);
+							checkWins();
+						}
+					}//end of BLK array adding
+
+					if (cells[i].state == WTE) {
+						if (WTEcells.indexOf(cells[i]) != -1){}
+							else {
+								WTEcells.push(cells[i]);
+								checkWins();
+							}
+					}//end of WTE array adding
+				}//end of isClicked
+
+			} // end for loop
+
+		} // end updateIntersects
+
+		function checkWins(){
+
+			if (BLKcells.length >= 5){
+
+				for (i=0; i<BLKcells.length; i++){
+
+					for (j=0; j<BLKcells.length; j++){
+
+
+
+						if (String(BLKcells[i].getPosition().SumArray([40,-40])) == String(BLKcells[j].getPosition())){
+
+							for (m = 0; m<BLKcells.length; m++){
+
+								if (String(BLKcells[j].getPosition().SumArray([40,-40])) == String(BLKcells[m].getPosition())) {
+
+									for (l=0; l<BLKcells.length; l++){
+
+										if (String(BLKcells[m].getPosition().SumArray([40,-40])) == String(BLKcells[l].getPosition())){
+
+											for (p = 0; p<BLKcells.length; p++){
+
+												if (String(BLKcells[l].getPosition().SumArray([40,-40])) == String(BLKcells[p].getPosition())){
+
+													alert("BLK Player wins!");
+													document.location.href = "";
+
+												}
+
+											}
+
+										}
+
+									}
+
+								}
+
+							}
+						}//end of positive diagonal check
+
+
+
+
+						if (String(BLKcells[i].getPosition().SumArray([40,40])) == String(BLKcells[j].getPosition())){
+
+							for (m = 0; m<BLKcells.length; m++){
+
+								if (String(BLKcells[j].getPosition().SumArray([40,40])) == String(BLKcells[m].getPosition())) {
+
+									for (l=0; l<BLKcells.length; l++){
+
+										if (String(BLKcells[m].getPosition().SumArray([40,40])) == String(BLKcells[l].getPosition())){
+
+											for (p = 0; p<BLKcells.length; p++){
+
+												if (String(BLKcells[l].getPosition().SumArray([40,40])) == String(BLKcells[p].getPosition())){
+
+													alert("BLK Player wins!");
+													document.location.href = "";
+
+												}
+
+											}
+
+										}
+
+									}
+
+								}
+
+							}
+						}//end of negative diagonal check
+
+
+
+
+
+
+						if (String(BLKcells[i].getPosition().SumArray([0,-40])) == String(BLKcells[j].getPosition())){
+
+							for (m = 0; m<BLKcells.length; m++){
+
+								if (String(BLKcells[j].getPosition().SumArray([0,-40])) == String(BLKcells[m].getPosition())) {
+
+									for (l=0; l<BLKcells.length; l++){
+
+										if (String(BLKcells[m].getPosition().SumArray([0,-40])) == String(BLKcells[l].getPosition())){
+
+											for (p = 0; p<BLKcells.length; p++){
+
+												if (String(BLKcells[l].getPosition().SumArray([0,-40])) == String(BLKcells[p].getPosition())){
+
+													alert("BLK Player wins!");
+													document.location.href = "";
+
+												}
+
+											}
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}//end of vertical check
+
+
+
+
+
+
+
+						if (String(BLKcells[i].getPosition().SumArray([40,0])) == String(BLKcells[j].getPosition())){
+
+							for (m = 0; m<BLKcells.length; m++){
+
+								if (String(BLKcells[j].getPosition().SumArray([40,0])) == String(BLKcells[m].getPosition())) {
+
+									for (l=0; l<BLKcells.length; l++){
+
+										if (String(BLKcells[m].getPosition().SumArray([40,0])) == String(BLKcells[l].getPosition())){
+
+											for (p = 0; p<BLKcells.length; p++){
+
+												if (String(BLKcells[l].getPosition().SumArray([40,0])) == String(BLKcells[p].getPosition())){
+
+													alert("BLK Player wins!");
+													document.location.href = "";
+
+												}
+
+											}
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}//end of horizontal check
+
+
+
+
+
+					}//end of inner loop
+
+				}//end of outer loop
+
+
+			}//end of BLK check win
+
+
+			if (WTEcells.length >= 5){
+
+				for (i=0; i<WTEcells.length; i++){
+
+					for (j=0; j<WTEcells.length; j++){
+
+
+
+						if (String(WTEcells[i].getPosition().SumArray([40,-40])) == String(WTEcells[j].getPosition())){
+
+							for (m = 0; m<WTEcells.length; m++){
+
+								if (String(WTEcells[j].getPosition().SumArray([40,-40])) == String(WTEcells[m].getPosition())) {
+
+									for (l=0; l<WTEcells.length; l++){
+
+										if (String(WTEcells[m].getPosition().SumArray([40,-40])) == String(WTEcells[l].getPosition())){
+
+											for (p = 0; p<WTEcells.length; p++){
+
+												if (String(WTEcells[l].getPosition().SumArray([40,-40])) == String(WTEcells[p].getPosition())){
+
+													alert("WTE Player wins!");
+													document.location.href = "";
+
+												}
+
+											}
+
+										}
+
+									}
+
+								}
+
+							}
+						}//end of positive diagonal check
+
+
+
+
+						if (String(WTEcells[i].getPosition().SumArray([40,40])) == String(WTEcells[j].getPosition())){
+
+							for (m = 0; m<WTEcells.length; m++){
+
+								if (String(WTEcells[j].getPosition().SumArray([40,40])) == String(WTEcells[m].getPosition())) {
+
+									for (l=0; l<WTEcells.length; l++){
+
+										if (String(WTEcells[m].getPosition().SumArray([40,40])) == String(WTEcells[l].getPosition())){
+
+											for (p = 0; p<WTEcells.length; p++){
+
+												if (String(WTEcells[l].getPosition().SumArray([40,40])) == String(WTEcells[p].getPosition())){
+
+													alert("WTE Player wins!");
+													document.location.href = "";
+
+												}
+
+											}
+
+										}
+
+									}
+
+								}
+
+							}
+						}//end of negative diagonal check
+
+
+
+
+
+
+						if (String(WTEcells[i].getPosition().SumArray([0,-40])) == String(WTEcells[j].getPosition())){
+
+							for (m = 0; m<WTEcells.length; m++){
+
+								if (String(WTEcells[j].getPosition().SumArray([0,-40])) == String(WTEcells[m].getPosition())) {
+
+									for (l=0; l<WTEcells.length; l++){
+
+										if (String(WTEcells[m].getPosition().SumArray([0,-40])) == String(WTEcells[l].getPosition())){
+
+											for (p = 0; p<WTEcells.length; p++){
+
+												if (String(WTEcells[l].getPosition().SumArray([0,-40])) == String(WTEcells[p].getPosition())){
+
+													alert("WTE Player wins!");
+													document.location.href = "";
+
+												}
+
+											}
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}//end of vertical check
+
+
+
+
+
+
+
+						if (String(WTEcells[i].getPosition().SumArray([40,0])) == String(WTEcells[j].getPosition())){
+
+							for (m = 0; m<WTEcells.length; m++){
+
+								if (String(WTEcells[j].getPosition().SumArray([40,0])) == String(WTEcells[m].getPosition())) {
+
+									for (l=0; l<WTEcells.length; l++){
+
+										if (String(WTEcells[m].getPosition().SumArray([40,0])) == String(WTEcells[l].getPosition())){
+
+											for (p = 0; p<WTEcells.length; p++){
+
+												if (String(WTEcells[l].getPosition().SumArray([40,0])) == String(WTEcells[p].getPosition())){
+
+													alert("WTE Player wins!");
+													document.location.href = "";
+
+												}
+
+											}
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}//end of horizontal check
+
+
+
+
+
+					}//end of inner loop
+
+				}//end of outer loop
+
+
+			}//end of WTE check win
+
+		}
+
+		function init(){
+
+			game = new Scene();
+
+			backgroundSprite = new Sprite(game, "Go.png", game.width, game.height);
+			backgroundSprite.setSpeed(0);
+			backgroundSprite.setPosition(game.width/2,game.height/2);
+
+			buildIntersects();
+
+
+			game.start();
+
+		}
+
+		function update(){
+			updateClient();
+
+			game.clear();
+			backgroundSprite.update();
+			updateIntersects();
+
+		}
+
+	</script>
+
+</head>
+
+<body onload = "init()">
+</body>
+</html>
