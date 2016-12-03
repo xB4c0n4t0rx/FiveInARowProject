@@ -1,20 +1,37 @@
 <!DOCTYPE html>
-
-<!--
-    Filename:  prototypeGo.html
-    Written by: Myson Burch
-    Date: 16 November 2016
-    Modification History: Original Buil
--->
-
 <html lang="en">
 <head>
 
 	<meta charset="UTF-8">
 	<title>Five In A Row</title>
+	<script src="http://localhost:3000/socket.io/socket.io.js"></script>
+	<script>
+    // Create SocketIO instance, connect
 
+    var socket = io.connect('http://localhost:3000');
+
+		var message = 'null';
+
+    // Add a connect listener
+    socket.on('connect',function() {
+      console.log('Client has connected to the server!');
+    });
+    // Add a connect listener
+    socket.on('message',function(data) {
+      console.log('Received a message from the server!',data);
+			message = data;
+    });
+    // Add a disconnect listener
+    socket.on('disconnect',function() {
+      console.log('The client has disconnected!');
+    });
+
+    // Sends a message to the server via sockets
+    function sendMessageToServer(message) {
+      socket.send(message);
+    };
+	</script>
 	<script type="text/javascript" src="simpleGame.js"></script>
-	<script type="text/javascript" src="gameClient.js"></script>
 	<script>
 
 
@@ -29,9 +46,6 @@
 		var BLKcells = [];
 		wtectr = 0;
 		blkctr = 0;
-		var gc;
-		var message;
-		var turn;
 
 		function Cell(){
 			tCell = new Sprite(game, "blank.png", 20, 20);
@@ -48,14 +62,29 @@
 				if (cell.state == BLANK && currentPlayer == BLK){
 					cell.state = currentPlayer;
 					cell.setImage(cell.images[currentPlayer]);
-					//send Sprite to server
-					gc.sendSprite(id, cell);
-					//change the turn
-					turn.setImage(turn.images[WTE]);
-					gc.sendSprite("turn", turn);
+					//send id to server
+					socket.send(id);
+					//switch turn
+					currentPlayer = WTE;
+					//send turn to server
+					setTimeout(function (){
+						socket.send('white');
+					}, 1000);
 				} // end if
 			} // end if
 		} // end checkClick
+
+		function updateClient(){
+			if(message!='black' && message != 'null' && message!='white'){
+				if (cells[message].state == BLANK){
+					cells[message].state = currentPlayer;
+					cells[message].setImage(cells[message].images[currentPlayer]);
+				}
+			}
+			if(message == 'black'){
+				currentPlayer = BLK;
+			}
+		}
 
 		Array.prototype.SumArray = function (arr) {
 			var sum = [];
@@ -428,14 +457,7 @@
 
 		function init(){
 
-			gc = new GameClient("ws://localhost:8001/gameServer.js");
-      gc.connect();
-
 			game = new Scene();
-
-			turn = new Cell();
-			turn.setPosition(-20,-20);
-			turn.setImage(turn.images[currentPlayer]);
 
 			backgroundSprite = new Sprite(game, "Go.png", game.width, game.height);
 			backgroundSprite.setSpeed(0);
@@ -448,35 +470,12 @@
 
 		}
 
-		function updateClient(){
-			for(i=0;i<cells.length;i++){
-				gc.updateRemoteSprite(i, cells[i]);
-				if(cells[i].image == cells[i].images[WTE]){
-					cells[i].state = WTE;
-				}
-				if(cells[i].image == cells[i].images[BLK]){
-					cells[i].state = BLK;
-				}
-			}
-		}
-
-		function updateTurn(){
-			gc.updateRemoteSprite("turn", turn);
-			if(turn.image == turn.images[WTE]){
-				currentPlayer = WTE;
-			}
-			if(turn.image == turn.images[BLK]){
-				currentPlayer = BLK;
-			}
-		}
-
 		function update(){
+			updateClient();
 
 			game.clear();
 			backgroundSprite.update();
 			updateIntersects();
-			//updateClient();
-			updateTurn();
 
 		}
 

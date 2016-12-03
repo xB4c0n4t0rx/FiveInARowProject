@@ -1,53 +1,16 @@
 <!DOCTYPE html>
-
-<!--
-    Filename:  prototypeGo.html
-    Written by: Myson Burch
-    Date: 16 November 2016
-    Modification History: Original Buil
--->
-
 <html lang="en">
 <head>
 
 	<meta charset="UTF-8">
 	<title>Five In A Row</title>
-	<script type="text/javascript" src="simpleGame.js"></script>
-	<script type = "text/javascript" src = "gameClient.js"></script>
-	<script type = "text/javascript" src = "cellClass.js"></script>
-  <script>
-
-
-  function connect(){
-
-		game = new Scene();
-
-		BLANK = 0;
-		BLK = 1;
-
-    gc = new GameClient("ws://localhost:8001/gameServer.js");
-    gc.connect();
-		turn = new Cell();
-		turn.setImage(turn.images[BLK]);
-		
-  }
-
-  function blackConnects(){
-		gc.sendSprite("turn", turn);
-  }
-
-  function whiteConnects(){
-
-  }
-
-  </script>
 </head>
-<body onload = "connect()">
+<body>
   <header> Five In A Row </header>
   <p>
-        <a onclick = "blackConnects()" href = "black.html">Player One</a>
+        <a href = "black.html">Player One</a>
   </p>
   <p>
-        <a onclick = "whiteConnects()" href = "white.html">Player Two</a>
+        <a href = "white.html">Player Two</a>
   </p>
 </body>
